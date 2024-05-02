@@ -1,0 +1,49 @@
+import java.util.*;
+public class RabinKarp {
+
+    public static void robinKarpAlgorithm(int T, int P, int Q) {
+        List<Integer> spurious = new ArrayList<>();
+        int hash_P = P % Q;
+        int n = String.valueOf(P).length();
+        List<Integer> occurrence = new ArrayList<>();
+        String p = String.valueOf(P);
+        String t = String.valueOf(T);
+        for (int i = 0; i < t.length() - n + 1; i++) {
+            int hash_T = Integer.parseInt(t.substring(i, i + n)) % Q;
+            if (hash_T == hash_P) {
+                spurious.add(Integer.parseInt(t.substring(i, i + n)));
+                boolean found = true;
+                for (int j = 0; j < n; j++) {
+                    if (t.charAt(i + j) != p.charAt(j)) {
+                        found = false;
+                        break;
+                    }
+                }
+                if (found) {
+                    occurrence.add(i);
+                }
+            }
+        }
+        System.out.println("For this Spurious Sets are " + spurious);
+        for (int i : occurrence) {
+            System.out.println("Pattern Found at: " + (i + 1));
+        }
+        if (occurrence.isEmpty()) {
+            System.out.println("Pattern Not Found");
+        }
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter Text: ");
+        int text = scanner.nextInt();
+        System.out.print("Enter Pattern: ");
+        int pattern = scanner.nextInt();
+        System.out.print("Enter Prime No: ");
+        int primeNo = scanner.nextInt();
+        scanner.close();
+
+        robinKarpAlgorithm(text, pattern, primeNo);
+    }
+}
+

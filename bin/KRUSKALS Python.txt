@@ -1,0 +1,74 @@
+class DisjointSet:
+    def __init__(self, vertices):
+        self.parent = {v: v for v in vertices}
+
+    def find(self, v):
+        if self.parent[v] != v:
+            self.parent[v] = self.find(self.parent[v])
+        return self.parent[v]
+
+    def union(self, v1, v2):
+        root1 = self.find(v1)
+        root2 = self.find(v2)
+        self.parent[root1] = root2
+
+def Kruskals_algo(graph):
+    # Sort edges by weight
+    edges = sorted(graph, key=lambda x: x[2])
+    
+    vertices = set()
+    for edge in edges:
+        vertices.add(edge[0])
+        vertices.add(edge[1])
+
+    # Initialize disjoint set
+    disjoint_set = DisjointSet(vertices)
+
+    # Initialize minimum spanning tree
+    mst = []
+
+    for edge in edges:
+        v1, v2, weight = edge
+        if disjoint_set.find(v1) != disjoint_set.find(v2):
+            mst.append(edge)
+            disjoint_set.union(v1, v2)
+
+    return mst
+
+while(True):
+    print("\n****Kruskal's Algorithm")
+    print("1. Enter Weights for Edges: ")
+    print("2. Exit")
+
+    choice = int(input("Enter Your Choice: "))
+
+    match(choice):
+
+        case 1:
+            vertices = list(map(int, input("Enter The Vertices: ").strip().split()))
+
+            lis = []
+            lis1 = []
+
+            print("*****Enter distace between Given Vertices*****")
+            print("If not conntected then enter None")
+            for i in vertices:
+                for j in vertices:
+                    if i == j:
+                        pass
+                    else:
+                        distance = input(f"\nEnter the distance between {i} and {j}: ")
+                        if distance.lower() == 'none':
+                            pass
+                        else:
+                            lis1.append(i)
+                            lis1.append(j)
+                            lis1.append(int(distance))
+                            lis.append(lis1)
+                            lis1 = []
+            mst = Kruskals_algo(lis)
+            print("Minimum Spanning Tree:")
+            for edge in mst:
+                print(edge)
+        case 2:
+            exit()

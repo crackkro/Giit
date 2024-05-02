@@ -1,0 +1,64 @@
+def is_safe(board, row, col, N):
+    # same column may check
+    for i in range(row):
+        if board[i][col] == 1:
+            return False
+
+    # left side
+    for i, j in zip(range(row, -1, -1), range(col, -1, -1)):
+        if board[i][j] == 1:
+            return False
+
+    # right side
+    for i, j in zip(range(row, -1, -1), range(col, N)):
+        if board[i][j] == 1:
+            return False
+
+    return True
+
+def solve_n_queens_fail(board, row, N):
+    if row >= N:
+        return True
+
+    for col in range(N):
+        if is_safe(board, row, col, N):
+            board[row][col] = 1
+
+            if solve_n_queens_fail(board, row + 1, N):
+                return True
+
+            board[row][col] = 0
+
+    return False
+
+def solve_n_queens(N):
+    board = [[0] * N for _ in range(N)]
+
+    if not solve_n_queens_fail(board, 0, N):
+        print("Solution does not exist")
+        return False
+
+    print_solution(board)
+    return True
+
+def print_solution(board):
+    print("\n")
+    for row in board:
+        print("|"," ".join(map(str, row)), "|")
+
+
+
+while(True):
+    print("\nN- Queen Problem(BackTracking)\n")
+    print("1. Enter No. of Queen")
+    print("2. Exit")
+
+    choice = int(input("Enter your Choice: "))
+
+    match(choice):
+        case 1:
+            n = int(input("Enter No. Of Queen: "))
+            solve_n_queens(n)
+
+        case 2:
+            exit()

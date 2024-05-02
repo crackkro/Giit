@@ -1,0 +1,113 @@
+import java.util.*;
+
+public class Dijkstras {
+
+    public static String dijkstrasAlgorithm(Map<Integer, Map<Integer, Integer>> graph, int start) {
+        Map<Integer, Integer> result = new HashMap<>();
+        for (int i : graph.keySet()) {
+            result.put(i, Integer.MAX_VALUE);
+        }
+        result.put(start, 0);
+
+        List<Integer> visited = new ArrayList<>();
+
+        while (!graph.isEmpty()) {
+            Integer minNode = null;
+
+            for (int i : graph.keySet()) {
+                if (minNode == null || result.get(minNode) > result.get(i)) {
+                    minNode = i;
+                }
+            }
+
+            if (minNode == null) {
+                break;
+            }
+
+            for (Map.Entry<Integer, Integer> entry : graph.get(minNode).entrySet()) {
+                int neighbor = entry.getKey();
+                int weight = entry.getValue();
+                int distance = result.get(minNode) + weight;
+
+                if (distance < result.get(neighbor)) {
+                    result.put(neighbor, distance);
+                }
+            }
+
+            visited.add(minNode);
+            graph.remove(minNode);
+        }
+
+        return "--> Shortest Distance between the Vertices: " + result + "\n --> visited : " + visited;
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        while (true) {
+            System.out.println("\n\n****Dijkstra's Algorithm");
+            System.out.println("1. Enter Vertices For findout the Shortest path");
+            System.out.println("2. Exit");
+
+            System.out.print("Enter Your Choice: ");
+            int choice = scanner.nextInt();
+
+            switch (choice) {
+                case 1:
+                    System.out.print("Enter the no. of vertices: ");
+                    int numVertices = scanner.nextInt();
+                    System.out.print("Enter The Vertices: ");
+                    List<Integer> vertices = new ArrayList<>();
+                    for (int i = 0; i < numVertices; i++) {
+                        vertices.add(scanner.nextInt());
+                    }
+
+                    List<List<Integer>> lis = new ArrayList<>();
+                    List<Integer> lis1;
+
+                    System.out.print("Enter the starting Point: ");
+                    int start = scanner.nextInt();
+                    if (!vertices.contains(start)) {
+                        System.out.println("Point " + start + " is not present in given vertices");
+                    } else {
+                        System.out.println("*****Enter distance between Given Vertices*****");
+                        System.out.println("If not connected then enter None");
+                        for (int i : vertices) {
+                            for (int j : vertices) {
+                                if (i != j) {
+                                    System.out.print("Enter the distance between " + i + " and " + j + ": ");
+                                    int distance = scanner.nextInt();
+                                    if (distance != -1) {
+                                        lis1 = new ArrayList<>();
+                                        lis1.add(i);
+                                        lis1.add(j);
+                                        lis1.add(distance);
+                                        lis.add(lis1);
+                                    }
+                                }
+                            }
+                        }
+
+                        Map<Integer, Map<Integer, Integer>> adjacencyList = new HashMap<>();
+                        for (int i : vertices) {
+                            adjacencyList.put(i, new HashMap<>());
+                            for (List<Integer> list : lis) {
+                                if (i == list.get(0)) {
+                                    adjacencyList.get(i).put(list.get(1), list.get(2));
+                                }
+                            }
+                        }
+                        System.out.println("--> Your Graph vertices has the Adjacency Like this : " + adjacencyList);
+                        System.out.println(dijkstrasAlgorithm(adjacencyList, start));
+                    }
+                    break;
+                case 2:
+                    scanner.close();
+                    return;
+                default:
+                    System.out.println("Invalid choice. Please enter 1 or 2.");
+            }
+        }
+    }
+}
+

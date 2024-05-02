@@ -1,0 +1,73 @@
+def Dijkstras_algo(graph:dict, start:int):
+    result = {}
+    for i in graph:
+        result[i] = float('inf')
+    
+    result[start]=0
+    visited = []
+    while graph:
+        min_node = None
+
+        for i in graph:
+            if min_node is  None:
+                min_node = i
+            elif( result[min_node] > result[i]):
+                min_node = i
+        
+        if min_node is None:
+            break
+        for neighbor, weight in graph[min_node].items():
+            distance = result[min_node] + weight
+            if distance < result[neighbor]:
+                result[neighbor] = distance
+        visited.append(min_node)
+        del graph[min_node]
+    return f"--> Shortest Distance between the Vertices: {result} \n --> visited : {visited}"
+
+while(True):
+    print("\n****Dijkstra's Algorithm")
+    print("1. Enter Vertices For findout the Shortest path")
+    print("2. Exit")
+
+    choice = int(input("Enter Your Choice: "))
+
+    match(choice):
+
+        case 1:
+            no_of_vertices = int(input("Enter the no. of vertices: "))
+            vertices = list(map(int, input("Enter The Vertices: ").strip().split()))
+
+            lis = []
+            lis1 = []
+
+            start = int(input("Enter the starting Point"))
+            if start not in vertices:
+                print(f"point {start} is not present in given vertices")
+            else:
+                print("*****Enter distace between Given Vertices*****")
+                print("If not conntected then enter None")
+                for i in vertices:
+                    for j in vertices:
+                        if i == j:
+                            pass
+                        else:
+                            distance = input(f"\nEnter the distance between {i} and {j}: ")
+                            if distance.lower() == 'none':
+                                pass
+                            else:
+                                lis1.append(i)
+                                lis1.append(j)
+                                lis1.append(int(distance))
+                                lis.append(lis1)
+                                lis1 = []
+
+                adjancy_list = { }
+                for i in vertices:
+                    adjancy_list[i] = {}
+                    for j in lis:
+                        if i == j[0]:
+                            adjancy_list[i][j[1]] = j[2]
+                print(f"--> Your Graph is : {adjancy_list}")
+                print(Dijkstras_algo(adjancy_list, start))
+        case 2:
+            exit()

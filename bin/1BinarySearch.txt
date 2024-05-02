@@ -1,0 +1,91 @@
+import java.util.Scanner;
+
+public class ArrayOperations {
+
+    // Bubble Sort implementation
+    public static void bubbleSort(int[] arr, int n) {
+        for (int i = 0; i < n - 1; i++) {
+            for (int j = 0; j < n - i - 1; j++) {
+                if (arr[j] > arr[j + 1]) {
+                    // Swap arr[j] and arr[j+1]
+                    int temp = arr[j];
+                    arr[j] = arr[j + 1];
+                    arr[j + 1] = temp;
+                }
+            }
+        }
+    }
+
+    // Binary Search implementation
+    public static int binarySearch(int[] arr, int low, int high, int key) {
+        if (low <= high) {
+            int mid = (low + high) / 2;
+            if (arr[mid] == key)
+                return mid + 1; // Adjust the index to start from 1
+            if (arr[mid] > key)
+                return binarySearch(arr, low, mid - 1, key);
+            return binarySearch(arr, mid + 1, high, key);
+        }
+        return -1; // Key not found
+    }
+
+    // Print Array elements
+    public static void printArray(int[] arr, int n) {
+        for (int i = 0; i < n; i++) {
+            System.out.print(arr[i] + " ");
+        }
+        System.out.println();
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Enter the number of elements: ");
+        int n = scanner.nextInt();
+
+        int[] arr = new int[n];
+        System.out.println("Enter " + n + " elements:");
+        for (int i = 0; i < n; i++) {
+            arr[i] = scanner.nextInt();
+        }
+
+        int choice;
+        do {
+            System.out.println("\nMenu:");
+            System.out.println("1. Sort the array");
+            System.out.println("2. Search for an element");
+            System.out.println("3. Print the array");
+            System.out.println("4. Exit");
+            System.out.print("Enter your choice: ");
+            choice = scanner.nextInt();
+
+            switch (choice) {
+                case 1:
+                    bubbleSort(arr, n);
+                    System.out.println("Array sorted successfully.");
+                    break;
+                case 2:
+                    System.out.print("Enter the element to search: ");
+                    int key = scanner.nextInt();
+                    int result = binarySearch(arr, 0, n - 1, key);
+                    if (result != -1) {
+                        System.out.println(key + " found at position " + result + ".");
+                    } else {
+                        System.out.println(key + " not found in the array.");
+                    }
+                    break;
+                case 3:
+                    System.out.print("Array elements: ");
+                    printArray(arr, n);
+                    break;
+                case 4:
+                    System.out.println("Exiting the program.");
+                    break;
+                default:
+                    System.out.println("Invalid choice. Please enter a valid option.");
+            }
+        } while (choice != 4);
+
+        scanner.close();
+    }
+}

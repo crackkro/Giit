@@ -1,0 +1,91 @@
+public class NQueens {
+
+    private static final int MAX_SIZE = 10; // Maximum size of the chessboard
+
+    // Print the chessboard configuration
+    private static void printSolution(int[][] board, int N) {
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                if (board[i][j] == 1)
+                    System.out.print("Q ");
+                else
+                    System.out.print(". ");
+            }
+            System.out.println();
+        }
+        System.out.println();
+    }
+
+    // Check if a queen can be placed at a given position
+    private static boolean isSafe(int[][] board, int row, int col, int N) {
+        int i, j;
+        // Check this row on the left side
+        for (i = 0; i < col; i++)
+            if (board[row][i] == 1)
+                return false;
+        // Check upper diagonal on the left side
+        for (i = row, j = col; i >= 0 && j >= 0; i--, j--)
+            if (board[i][j] == 1)
+                return false;
+        // Check lower diagonal on the left side
+        for (i = row, j = col; j >= 0 && i < N; i++, j--)
+            if (board[i][j] == 1)
+                return false;
+        return true;
+    }
+
+    // Utility function to solve N Queen problem
+    private static boolean solveNQUtil(int[][] board, int col, int N, int[] solutionCount) {
+        // Base case: If all queens are placed, return true
+        if (col >= N) {
+            solutionCount[0]++;
+            if (solutionCount[0] > 2) // Exit after finding two solutions
+                return true;
+            System.out.println("Solution " + solutionCount[0] + ":");
+            printSolution(board, N);
+            return false; // Continue searching for more solutions
+        }
+        // Consider this column and try placing this queen in all rows one by one
+        for (int i = 0; i < N; i++) {
+            // Check if the queen can be placed on board[i][col]
+            if (isSafe(board, i, col, N)) {
+                // Place this queen in board[i][col]
+                board[i][col] = 1;
+                // Recur to place rest of the queens
+                if (solveNQUtil(board, col + 1, N, solutionCount))
+                    return true;
+                // If placing queen in board[i][col] doesn't lead to a solution, then remove queen from board[i][col]
+                board[i][col] = 0; // BACKTRACK
+            }
+        }
+        // If the queen cannot be placed in any row in this column col, then return false
+        return false;
+    }
+
+    // Main function to solve N Queen problem
+    private static boolean solveNQ(int N) {
+        int[][] board = new int[MAX_SIZE][MAX_SIZE];
+        for (int i = 0; i < N; i++)
+            for (int j = 0; j < N; j++)
+                board[i][j] = 0; // Initialize board
+        int[] solutionCount = {0};
+        if (!solveNQUtil(board, 0, N, solutionCount)) {
+            System.out.println("No solution exists for the given size.");
+            return false;
+        }
+        return true;
+    }
+
+    // Driver program to test above function
+    public static void main(String[] args) {
+        java.util.Scanner scanner = new java.util.Scanner(System.in);
+        System.out.print("Enter the size of the chessboard: ");
+        int N = scanner.nextInt();
+        scanner.close();
+        if (N <= 0 || N > MAX_SIZE) {
+            System.out.printf("Invalid size! Please enter a size between 1 and %d.%n", MAX_SIZE);
+            System.exit(1);
+        }
+        solveNQ(N);
+    }
+}

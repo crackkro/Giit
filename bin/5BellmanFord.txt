@@ -1,0 +1,79 @@
+import java.*;
+
+public class BellmanFord {
+
+    public static Map<String, Integer> bellmanFord(Map<String, Map<String, Integer>> graph, List<String> vertices) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter Start Node: ");
+        String start = scanner.nextLine();
+        scanner.close();
+
+        Map<String, Integer> result = new HashMap<>();
+        for (String vertex : vertices) {
+            result.put(vertex, Integer.MAX_VALUE);
+        }
+
+        result.put(start, 0);
+
+        for (int j = 0; j < vertices.size() - 1; j++) {
+            for (String u : graph.keySet()) {
+                for (String v : graph.get(u).keySet()) {
+                    if (result.get(u) != Integer.MAX_VALUE && result.get(u) + graph.get(u).get(v) < result.get(v)) {
+                        result.put(v, result.get(u) + graph.get(u).get(v));
+                    }
+                }
+            }
+        }
+
+        // Check for negative cycle
+        for (String u : graph.keySet()) {
+            for (String v : graph.get(u).keySet()) {
+                if (result.get(u) != Integer.MAX_VALUE && result.get(u) + graph.get(u).get(v) < result.get(v)) {
+                    System.out.println("Graph contains negative cycle");
+                    return null;
+                }
+            }
+        }
+
+        return result;
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Enter the number of vertices: ");
+        int numVertices = scanner.nextInt();
+        scanner.nextLine(); // consume the newline
+
+        List<String> vertices = new ArrayList<>();
+        Map<String, Map<String, Integer>> graph = new HashMap<>();
+
+        for (int i = 0; i < numVertices; i++) {
+            System.out.print("Enter Vertex: ");
+            String vertex = scanner.nextLine();
+            vertices.add(vertex);
+            graph.put(vertex, new HashMap<>());
+        }
+
+        for (String u : vertices) {
+            for (String v : vertices) {
+                if (!u.equals(v)) {
+                    System.out.print("Enter Distance between " + u + " & " + v + ": ");
+                    int dist = scanner.nextInt();
+                    scanner.nextLine(); // consume the newline
+                    if (dist != -1) {
+                        graph.get(u).put(v, dist);
+                    }
+                }
+            }
+        }
+
+        Map<String, Integer> shortestPaths = bellmanFord(graph, vertices);
+        if (shortestPaths != null) {
+            System.out.println("Shortest Paths from single node: ");
+            System.out.println(shortestPaths);
+        }
+
+        scanner.close();
+    }
+}

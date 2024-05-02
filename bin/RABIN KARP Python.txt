@@ -1,0 +1,48 @@
+def rabin_karp(text, pattern, prime):
+    
+    d = 10
+    text_length = len(text)
+    pattern_length = len(pattern)
+    hash_pattern = 0
+    hash_text = 0
+    h = 1
+    spurious_sets = []
+
+    # Calculate the hash value of the pattern and the first window of the text
+    for i in range(pattern_length):
+        hash_pattern = (hash_pattern * d + ord(pattern[i])) % prime
+        hash_text = (hash_text * d + ord(text[i])) % prime
+        if i < pattern_length - 1:
+            h = (h * d) % prime
+
+    # Slide the pattern over the text
+    for i in range(text_length - pattern_length + 1):
+        # Check if the hash values match
+        if hash_pattern == hash_text:
+            # Check if the actual characters match
+            match = True
+            for j in range(pattern_length):
+                if text[i + j] != pattern[j]:
+                    match = False
+                    break
+            if match:
+                print(f"Pattern found at index {i}")
+            else:
+                spurious_sets.append((i, int(text[i:i+2])))
+
+        # Update the hash value of the text for the next window
+        if i < text_length - pattern_length:
+            hash_text = (d * (hash_text - ord(text[i]) * h) + ord(text[i + pattern_length])) % prime
+            if hash_text < 0:
+                hash_text += prime
+
+    return spurious_sets
+
+# Get user input
+text = input("Enter text: ")
+pattern = input("Enter pattern: ")
+prime = int(input("Enter prime number: "))
+
+# Call the function
+spurious_sets = rabin_karp(text, pattern, prime)
+print(f"Spurious sets: {spurious_sets}")

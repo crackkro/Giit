@@ -1,0 +1,55 @@
+
+import java.util.Scanner;
+import java.util.ArrayList;
+
+public class LCS {
+
+    ArrayList<Character> result;
+
+    public LCS() {
+        result = new ArrayList<>();
+        while (true) {
+            System.out.println("***Longest Common Subsequence ***");
+            System.out.println("1. Enter Strings: ");
+            System.out.println("2. Exit: ");
+
+            Scanner scanner = new Scanner(System.in);
+            int options = scanner.nextInt();
+
+            switch (options) {
+                case 1:
+                    System.out.print("Enter String 1: ");
+                    String s1 = scanner.next();
+                    System.out.print("Enter String 2: ");
+                    String s2 = scanner.next();
+                    int length = lcs(s1, s2, s1.length(), s2.length());
+                    System.out.printf("Your Longest Common Subsequence is: %s and its length is: %d\n", result.toString(), length);
+                    break;
+                case 2:
+                    scanner.close();
+                    return;
+                default:
+                    System.out.println("Invalid option. Please enter 1 or 2.");
+            }
+        }
+    }
+
+    public int lcs(String s1, String s2, int m, int n) {
+        if (m == 0 || n == 0) {
+            return 0;
+        } else if (s1.charAt(m - 1) == s2.charAt(n - 1)) {
+            if (!result.contains(s2.charAt(n - 1))) {
+                result.add(s2.charAt(n - 1));
+            }
+            return 1 + lcs(s1, s2, m - 1, n - 1);
+        } else {
+            return Math.max(lcs(s1, s2, m, n - 1), lcs(s1, s2, m - 1, n));
+        }
+    }
+
+    public static void main(String[] args) {
+        new LCS();
+    }
+}
+
+

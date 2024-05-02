@@ -1,0 +1,45 @@
+def bellman_ford(graph: dict, vertices: list):
+    start = input("Enter Start Node: ")
+    result = {}
+    for i in vertices:
+        result[i] = float("inf")
+
+    result[start] = 0
+
+    for j in range(len(vertices) - 1):
+        for u in graph:
+            for v in graph[u]:
+                if result[u] != float("inf") and result[u] + graph[u][v] < result[v]:
+                    result[v] = result[u] + graph[u][v]
+
+    # negative cycle ko consider  nahi karna hai 
+    for u in graph:
+        for v in graph[u]:
+            if result[u] != float("inf") and result[u] + graph[u][v] < result[v]:
+                print("Graph contains negative cycle")
+                return
+
+    return result
+
+vertices = []
+graph = {}
+
+for i in range(int(input("no. Of vertices: "))):
+    vertice = input("Enter Vertices ")
+    vertices.append(vertice)
+
+for i in range(len(vertices)):
+    graph[vertices[i]] = {}
+
+for i in range(len(vertices)):
+    for j in range(len(vertices)):
+        if i == j:
+            pass
+        else:
+            dist = input(f"Enter Distance b/w {vertices[i]} & {vertices[j]}: ")
+            if dist == "null":
+                pass
+            else:
+                graph[vertices[i]][vertices[j]] = int(dist)
+
+print(("Shortest Path From Single node "), "\n", bellman_ford(graph, vertices))
