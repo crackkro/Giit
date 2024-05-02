@@ -1,0 +1,109 @@
+#include <iostream>
+#include <vector>
+#include <unordered_set>
+#include <queue>
+#include <algorithm>
+using namespace std;
+
+// Function to simulate FIFO page replacement policy
+int FIFO(const vector<int>& pages, int capacity) {
+    queue<int> q;
+    unordered_set<int> s;
+    int pageFaults = 0;
+
+    for (int page : pages) {
+        if (s.find(page) == s.end()) {
+            pageFaults++;
+            if (q.size() == capacity) {
+                int front = q.front();
+                q.pop();
+                s.erase(front);
+            }
+            q.push(page);
+            s.insert(page);
+        }
+    }
+
+    return pageFaults;
+}
+
+// Function to simulate LRU page replacement policy
+int LRU(const vector<int>& pages, int capacity) {
+    unordered_set<int> s;
+    vector<int> cache;
+    int pageFaults = 0;
+
+    for (int page : pages) {
+        if (s.find(page) == s.end()) {
+            pageFaults++;
+            if (cache.size() == capacity) {
+                int leastRecentlyUsed = cache.front();
+                s.erase(leastRecentlyUsed);
+                cache.erase(cache.begin());
+            }
+        } else {
+            cache.erase(find(cache.begin(), cache.end(), page));
+        }
+        cache.push_back(page);
+        s.insert(page);
+    }
+
+    return pageFaults;
+}
+
+// Function to simulate Optimal page replacement policy
+int Optimal(const vector<int>& pages, int capacity) {
+    unordered_set<int> s;
+    vector<int> cache;
+    int pageFaults = 0;
+
+    for (int page : pages) {
+        if (s.find(page) == s.end()) {
+            pageFaults++;
+            if (cache.size() == capacity) {
+                int farthestPageIdx = -1;
+                int farthestDistance = -1;
+                for (int i = 0; i < cache.size(); ++i) {
+                    int nextPage = page;
+                    bool foundInFuture = false;
+                    for (int j = pageFaults; j < pages.size(); ++j) {
+                        if (pages[j] == cache[i]) {
+                            foundInFuture = true;
+                            if (j > farthestDistance) {
+                                farthestPageIdx = i;
+                                farthestDistance = j;
+                            }
+                            break;
+                        }
+                    }
+                    if (!foundInFuture) {
+                        farthestPageIdx = i;
+                        break;
+                    }
+                }
+                s.erase(cache[farthestPageIdx]);
+                cache.erase(cache.begin() + farthestPageIdx);
+            }
+        } else {
+            cache.erase(find(cache.begin(), cache.end(), page));
+        }
+        cache.push_back(page);
+        s.insert(page);
+    }
+
+    return pageFaults;
+}
+
+int main() {
+    vector<int> pages = {7, 0, 1, 2, 0, 3, 0, 4, 2, 3, 0, 3, 2};
+
+    int capacity;
+    cout << "Enter the capacity of the frame: ";
+    cin >> capacity;
+
+    cout << "FIFO Page Faults: " << FIFO(pages, capacity) << endl;
+    cout << "LRU Page Faults: " << LRU(pages, capacity) << endl;
+    cout << "Optimal Page Faults: " << Optimal(pages, capacity) << endl;
+
+    return 0;
+}

@@ -1,0 +1,66 @@
+#include <iostream>
+#include <vector>
+#include <cmath>
+#include <algorithm>
+#include <climits> 
+
+using namespace std;
+
+// Function to calculate total head movement for FCFS algorithm
+int fcfs(vector<int> &requests, int initialHead)
+{
+    int totalHeadMovement = 0;
+    int currentHead = initialHead;
+
+    for (int request : requests)
+    {
+        totalHeadMovement += abs(request - currentHead);
+        currentHead = request;
+    }
+
+    return totalHeadMovement;
+}
+
+// Function to calculate total head movement for SSTF algorithm
+int sstf(vector<int> &requests, int initialHead)
+{
+    int totalHeadMovement = 0;
+    int currentHead = initialHead;
+    vector<bool> visited(requests.size(), false);
+
+    for (size_t i = 0; i < requests.size(); ++i)
+    {
+        int minDist = INT_MAX; 
+        int minIdx = -1;
+
+        for (size_t j = 0; j < requests.size(); ++j)
+        {
+            if (!visited[j])
+            {
+                int distance = abs(requests[j] - currentHead);
+                if (distance < minDist)
+                {
+                    minDist = distance;
+                    minIdx = j;
+                }
+            }
+        }
+
+        totalHeadMovement += minDist;
+        currentHead = requests[minIdx];
+        visited[minIdx] = true;
+    }
+
+    return totalHeadMovement;
+}
+
+int main()
+{
+    vector<int> requests = {98, 183, 37, 122, 14, 124, 65, 67};
+    int initialHead = 53;
+
+    cout << "FCFS Total Head Movement: " << fcfs(requests, initialHead) << endl;
+    cout << "SSTF Total Head Movement: " << sstf(requests, initialHead) << endl;
+
+    return 0;
+}

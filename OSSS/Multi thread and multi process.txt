@@ -1,0 +1,44 @@
+import threading
+from multiprocessing import Process
+import os
+
+# Function to be executed by each thread
+def thread_worker(thread_num):
+    try:
+        print(f"Thread {thread_num} executing in process {os.getpid()}")
+    except Exception as e:
+        print(f"Exception in thread {thread_num}: {e}")
+
+# Function to be executed by each process
+def process_worker(process_num):
+    try:
+        print(f"Process {process_num} executing in process {os.getpid()}")
+    except Exception as e:
+        print(f"Exception in process {process_num}: {e}")
+
+if __name__ == "__main__":
+    # Multi-threading
+    print("Multi-Threading Example:")
+    threads = []
+    for i in range(5):
+        thread = threading.Thread(target=thread_worker, args=(i,))
+        threads.append(thread)
+        thread.start()
+
+    # Multi-processing
+    print("\nMulti-Processing Example:")
+    processes = []
+    for i in range(5):
+        process = Process(target=process_worker, args=(i,))
+        processes.append(process)
+        process.start()
+
+    # Wait for all threads to complete
+    for thread in threads:
+        thread.join()
+
+    # Wait for all processes to complete
+    for process in processes:
+        process.join()
+
+    print("Main process exiting.")
