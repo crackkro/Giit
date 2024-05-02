@@ -1,0 +1,57 @@
+#include <stdio.h>
+#include <string.h>
+
+void computeLPSArray(const char* pattern, int M, int* lps) {
+    int len = 0;
+    lps[0] = 0;
+    for (int i = 1; i < M; ) {
+        if (pattern[i] == pattern[len])
+            lps[i++] = ++len;
+        else if (len != 0)
+            len = lps[len - 1];
+        else
+            lps[i++] = 0;
+    }
+}
+
+void KMPSearch(const char* pattern, const char* text) {
+    int M = strlen(pattern);
+    int N = strlen(text);
+    int lps[M];
+    computeLPSArray(pattern, M, lps);
+    for (int i = 0, j = 0; i < N; ) {
+        if (pattern[j] == text[i])
+            j++, i++;
+        if (j == M) {
+            printf("Pattern found at index %d\n", i - j);
+            j = lps[j - 1];
+        } else if (i < N && pattern[j] != text[i])
+            j = j ? lps[j - 1] : 0, i += !j;
+    }
+}
+
+int main() {
+    const int MAX = 1000;
+    char text[MAX], pattern[MAX];
+    int choice;
+    do {
+        printf("Menu:\n1. Search pattern in text\n2. Exit\nEnter your choice: ");
+        scanf("%d", &choice);
+        switch (choice) {
+            case 1:
+                printf("Enter text: ");
+                getchar();
+                fgets(text, MAX, stdin);
+                printf("Enter pattern: ");
+                fgets(pattern, MAX, stdin);
+                KMPSearch(pattern, text);
+                break;
+            case 2:
+                printf("Exiting...\n");
+                break;
+            default:
+                printf("Invalid choice! Please enter again.\n");
+        }
+    } while (choice != 2);
+    return 0;
+}

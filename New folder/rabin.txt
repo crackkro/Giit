@@ -1,0 +1,42 @@
+#include <stdio.h>
+#include <string.h>
+
+#define PRIME 101
+
+void rabinKarp(char text[], char pattern[]) {
+    int n = strlen(text), m = strlen(pattern), patternHash = 0, windowHash = 0, h = 1;
+    for (int i = 0; i < m; i++) {
+        patternHash = (patternHash * 256 + pattern[i]) % PRIME;
+        windowHash = (windowHash * 256 + text[i]) % PRIME;
+        if (i) h = (h * 256) % PRIME;
+    }
+    for (int i = 0; i <= n - m; i++) {
+        if (patternHash == windowHash) {
+            int j;
+            for (j = 0; j < m && text[i+j] == pattern[j]; j++);
+            if (j == m) printf("Pattern found at index %d\n", i);
+        }
+        if (i < n - m) {
+            windowHash = (256 * (windowHash - text[i] * h) + text[i+m]) % PRIME;
+            if (windowHash < 0) windowHash += PRIME;
+        }
+    }
+}
+
+int main() {
+    char text[1000], pattern[1000];
+    int choice;
+    printf("Menu:\n1. Enter text\n2. Enter pattern\n3. Find pattern in text\n4. Exit\n");
+    do {
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+        switch(choice) {
+            case 1: printf("Enter text: "); scanf("%s", text); break;
+            case 2: printf("Enter pattern: "); scanf("%s", pattern); break;
+            case 3: if (!strlen(text) || !strlen(pattern)) printf("Please enter text and pattern first.\n"); else rabinKarp(text, pattern); break;
+            case 4: printf("Exiting...\n"); break;
+            default: printf("Invalid choice. Please try again.\n");
+        }
+    } while (choice != 4);
+    return 0;
+}
